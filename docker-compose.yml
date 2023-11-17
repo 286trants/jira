@@ -1,0 +1,71 @@
+version: "3.9"
+
+services:
+  jira:
+    container_name: jira
+    restart: unless-stopped
+    image: walruship/jira:${VERSION:-9.4.12}
+    environment:
+      - ATL_PROXY_NAME=${ATL_PROXY_NAME:-localhost}
+      - ATL_PROXY_PORT=${ATL_PROXY_PORT:-443}
+      - ATL_TOMCAT_PORT=${ATL_TOMCAT_PORT:-8080}
+      - ATL_TOMCAT_SCHEME=${ATL_TOMCAT_SCHEME:-https}
+      - ATL_TOMCAT_SECURE=${ATL_TOMCAT_SECURE:-true}
+      - JVM_CODE_CACHE_ARGS=${JVM_CODE_CACHE_ARGS:-'-XX:InitialCodeCacheSize=1g -XX:ReservedCodeCacheSize=8g'}
+      - JVM_MAXIMUM_MEMORY=${JVM_MAXIMUM_MEMORY:-12g}
+      - JVM_MINIMUM_MEMORY=${JVM_MINIMUM_MEMORY:-1g}
+      - TZ=${TZ:-UTC}
+    ports:
+      - ${PORT:-8090}:8090
+    volumes:
+      - jira_data:/var/jira
+    depends_on:
+      - mysql
+    networks:
+      - network-bridge
+
+  mysql:
+    container_name: jira-db
+    restart: unless-stopped
+    image: mysql:8.0
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-database}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-password}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-rootpassword}
+      - MYSQL_USER=${MYSQL_USER:-user}
+      - TZ=${TZ:-UTC}
+    command: [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_bin', '--transaction-isolation=READ-COMMITTED', '--innodb_log_file_size=256M', '--max_allowed_packet=256M','--log_bin_trust_function_creators=1' ]
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - network-bridge
+
+  backup:
+    container_name: jira-backup
+    restart: unless-stopped
+    image: walruship/mysql-backup-s3:latest
+    environment:
+      - SCHEDULE=${SCHEDULE:-@weekly}
+      - BACKUP_KEEP_DAYS=${BACKUP_KEEP_DAYS:-7}
+      - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID:-Key}
+      - S3_BUCKET=${S3_BUCKET:-Bucket}
+      - S3_PREFIX=${S3_PREFIX:-Prefix}
+      - S3_REGION=${S3_REGION:-Region}
+      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY:-Secret}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-Database}
+      - MYSQL_HOST=${MYSQL_HOST:-MySQL}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-Password}
+      - MYSQL_USER=${MYSQL_USER:-User}
+      - PASSPHRASE=${PASSPHRASE:-Passphrase}
+    depends_on:
+      - mysql
+    networks:
+      - network-bridge
+
+volumes:
+  jira_data:
+  mysql_data:
+
+networks:
+  network-bridge:
+    driver: bridge
