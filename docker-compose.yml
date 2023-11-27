@@ -47,16 +47,16 @@ services:
     environment:
       - SCHEDULE=${SCHEDULE:-@weekly}
       - BACKUP_KEEP_DAYS=${BACKUP_KEEP_DAYS:-7}
-      - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID:-Key}
+      - PASSPHRASE=${PASSPHRASE:-Passphrase}
+      - S3_REGION=${S3_REGION:-Region}
       - S3_BUCKET=${S3_BUCKET:-Bucket}
       - S3_PREFIX=${S3_PREFIX:-Prefix}
-      - S3_REGION=${S3_REGION:-Region}
+      - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID:-Key}
       - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY:-Secret}
       - MYSQL_DATABASE=${MYSQL_DATABASE:-Database}
       - MYSQL_HOST=${MYSQL_HOST:-MySQL}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD:-Password}
       - MYSQL_USER=${MYSQL_USER:-User}
-      - PASSPHRASE=${PASSPHRASE:-Passphrase}
     depends_on:
       - mysql
     networks:

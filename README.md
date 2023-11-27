@@ -1,5 +1,5 @@
 <p align="center">
-	<img src="https://walruship-repository.s3.ap-southeast-1.amazonaws.com/images/jira-logo.png" alt="Jira Logo">
+	<img src="docs/jira.png" alt="Jira">
 </p>
 
 This project comes as a pre-built docker image that enables you to easily installation Jira without having to know too much about setup Jira.
@@ -26,6 +26,8 @@ git clone https://github.com/trants/jira.git \
 3. Edit environment variable
 ```bash
 # Jira
+VERSION=9.4.12
+PORT=8080
 ATL_PROXY_NAME=localhost
 ATL_PROXY_PORT=443
 ATL_TOMCAT_PORT=8090
@@ -34,9 +36,7 @@ ATL_TOMCAT_SECURE=true
 JVM_CODE_CACHE_ARGS="-XX:InitialCodeCacheSize=1g -XX:ReservedCodeCacheSize=8g"
 JVM_MAXIMUM_MEMORY=12g
 JVM_MINIMUM_MEMORY=1g
-PORT=8080
 TZ=UTC
-VERSION=9.4.12
 
 # MySQL
 MYSQL_USER=user
@@ -47,12 +47,12 @@ MYSQL_ROOT_PASSWORD=rootpassword
 # Backup
 SCHEDULE=@weekly
 BACKUP_KEEP_DAYS=7
-S3_ACCESS_KEY_ID=AKIA3M3ZKBJPQUBT2UK6
-S3_BUCKET=my-s3-bucket
-S3_PREFIX=prefix
-S3_REGION=us-east-1
-S3_SECRET_ACCESS_KEY=BNcXdm18XMctzMH87PZLm8UoP6WlegcPvsQbF5TH
 PASSPHRASE=wxHw26GJZQBDenA8
+S3_BUCKET=my-s3-bucket
+S3_REGION=us-east-1
+S3_PREFIX=prefix
+S3_ACCESS_KEY_ID=AKIA3M3ZKBJPQUBT2UK6
+S3_SECRET_ACCESS_KEY=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
 MYSQL_HOST=mysql
 ```
 
